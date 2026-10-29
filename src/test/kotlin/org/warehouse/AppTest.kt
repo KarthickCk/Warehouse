@@ -1,0 +1,11 @@
+package org.warehouse
+
+import kotlin.test.Test
+import kotlin.test.assertTrue
+
+class AppTest {
+    @Test
+    fun `sanity`() {
+        assertTrue(true)
+    }
+}
