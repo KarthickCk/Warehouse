@@ -10,7 +10,7 @@ class SimpleThresholdRule(
 ) : ThresholdRule {
 
     override fun evaluate(measurement: Measurement): Alarm? {
-        if (measurement.type == sensorType && measurement.value >= threshold)
+        if (measurement.type == sensorType && measurement.value > threshold)
             return Alarm(
                 measurement = measurement,
                 threshold = threshold

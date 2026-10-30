@@ -1,7 +1,7 @@
 package org.warehouse.measure.data.notifier
 
-import com.sun.org.slf4j.internal.Logger
-import com.sun.org.slf4j.internal.LoggerFactory
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.warehouse.measure.domain.model.Alarm
 import org.warehouse.measure.domain.port.AlarmNotifier
 

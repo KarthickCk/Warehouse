@@ -12,7 +12,8 @@ import kotlinx.coroutines.launch
 import java.net.DatagramPacket
 import java.net.DatagramSocket
 import java.net.SocketException
-import java.util.logging.Logger
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 class DatagramUdpListener(
     private val port: Int,
@@ -20,11 +21,12 @@ class DatagramUdpListener(
     private val channelCapacity: Int = 256,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
     private val onBound: (Int) -> Unit = {},
+    private val log: Logger = LoggerFactory.getLogger(DatagramUdpListener::class.java),
 ) : UdpListener {
 
     override fun packets(): Flow<String> = callbackFlow {
         val socket = DatagramSocket(port)
-        Logger.getGlobal().info("Listening for UDP on port {} ${socket.localPort}")
+        log.info("Listening for UDP on port {}", socket.localPort)
         onBound(socket.localPort)
 
         val reader = launch(ioDispatcher) {
@@ -38,7 +40,7 @@ class DatagramUdpListener(
                     throw e                              // real failure: fail the flow
                 }
                 val text = String(packet.data, packet.offset, packet.length, Charsets.UTF_8).trimEnd()
-                Logger.getGlobal().info("Listening for UDP on port {} ${socket.localPort} $text")
+                log.debug("port {} <- {}", socket.localPort, text)
                 trySend(text)
                 packet.length = buffer.size
             }
@@ -46,7 +48,7 @@ class DatagramUdpListener(
         }
 
         awaitClose {
-            Logger.getGlobal().info("Closing UDP port {} ${socket.localPort}")
+            log.info("Closing UDP port {}", socket.localPort)
             socket.close()
             reader.cancel()
         }
