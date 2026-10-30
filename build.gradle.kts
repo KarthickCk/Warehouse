@@ -4,7 +4,7 @@ plugins {
     application
 }
 
-group = "org.warehouse"
+group = "org.warehouse.app"
 version = "0.1.0"
 
 kotlin {
@@ -14,10 +14,14 @@ kotlin {
 dependencies {
     implementation(libs.bundles.kotlinxEcosystem)
     testImplementation(kotlin("test"))
+    implementation(libs.slf4jApi)
+    runtimeOnly(libs.slf4jSimple)
+    testImplementation(libs.kotlinxCoroutinesTest)
+    testImplementation(libs.konsist)
 }
 
 application {
-    mainClass = "org.warehouse.AppKt"
+    mainClass = "org.warehouse.measure.app.AppKt"
 }
 
 tasks.withType<Test>().configureEach {
