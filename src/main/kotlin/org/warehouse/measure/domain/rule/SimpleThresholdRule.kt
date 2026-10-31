@@ -18,6 +18,8 @@ class SimpleThresholdRule(
         return null
     }
 
+    override fun toString(): String = "SimpleThresholdRule(${sensorType.name} > $threshold ${sensorType.unit})"
+
     companion object {
         fun forAllTypes(thresholds: Map<SensorType, Double>): List<ThresholdRule> {
             return SensorType.entries.map { type ->

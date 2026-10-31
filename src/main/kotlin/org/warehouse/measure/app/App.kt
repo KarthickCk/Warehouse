@@ -8,6 +8,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import org.slf4j.LoggerFactory
 import org.warehouse.measure.data.config.AppConfig
 import org.warehouse.measure.data.messaging.Messenger
 import org.warehouse.measure.data.notifier.ConsoleAlarmNotifier
@@ -18,6 +19,8 @@ import org.warehouse.measure.domain.rule.SimpleThresholdRule
 import org.warehouse.measure.domain.port.MeasurementPublisher
 import org.warehouse.measure.domain.usecase.WarehouseMeasurementsUseCase
 import org.warehouse.measure.domain.usecase.CentralMeasurementsUseCase
+
+private val log = LoggerFactory.getLogger("App")
 
 fun main() = runBlocking {
 
@@ -48,14 +51,20 @@ fun main() = runBlocking {
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
-                e.printStackTrace()
+                log.error("Warehouse {} stopped unexpectedly", id, e)
             }
         }
     }
 
     Runtime.getRuntime().addShutdownHook(Thread {
+        log.info("Shutdown requested")
         root.cancel()
     })
+
+    log.info(
+        "Running. warehouses={} ports={} rules={}. Send UDP readings to the ports above; Ctrl-C to stop.",
+        config.warehouseIds, config.ports.mapKeys { it.key.name }, rules,
+    )
 
     root.coroutineContext.job.join()
 }
