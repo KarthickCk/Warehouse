@@ -36,8 +36,8 @@ class DatagramUdpListener(
                 try {
                     socket.receive(packet)
                 } catch (e: SocketException) {
-                    if (socket.isClosed) break           // normal shutdown via awaitClose
-                    throw e                              // real failure: fail the flow
+                    if (socket.isClosed) break
+                    throw e
                 }
                 val text = String(packet.data, packet.offset, packet.length, Charsets.UTF_8).trimEnd()
                 log.debug("port {} <- {}", socket.localPort, text)
